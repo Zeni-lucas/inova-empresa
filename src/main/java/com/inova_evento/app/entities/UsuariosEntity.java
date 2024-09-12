@@ -32,4 +32,7 @@ public class UsuariosEntity {
     @OneToOne(mappedBy = "usuario")
     private IdeiasEntity ideia;
 
+
+    public UsuariosEntity(long l, String admin, String mail, String admin123, Roles roles) {
+    }
 }
