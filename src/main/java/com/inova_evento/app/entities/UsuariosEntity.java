@@ -43,6 +43,4 @@ public class UsuariosEntity {
     private IdeiasEntity ideia;
 
 
-    public UsuariosEntity(long l, String admin, String mail, String admin123, Roles roles) {
-    }
 }
