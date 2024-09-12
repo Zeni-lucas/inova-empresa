@@ -4,4 +4,5 @@ import com.inova_evento.app.entities.UsuariosEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UsuariosRepository extends JpaRepository<UsuariosEntity,Long> {
+    boolean existsByEmail(String email);
 }

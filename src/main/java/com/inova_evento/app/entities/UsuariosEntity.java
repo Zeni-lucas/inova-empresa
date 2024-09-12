@@ -1,7 +1,11 @@
 package com.inova_evento.app.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.inova_evento.app.entities.enums.Roles;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,17 +23,23 @@ public class UsuariosEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank(message = "O nome deve ser informado")
     private String nome;
+    @NotBlank @Email(message = "O email deve ter um formato valido")
+    @Column(unique = true)
     private String email;
+    @NotBlank(message = "Uma senha deve ser informada")
     private String senha;
 
     @Enumerated(EnumType.STRING)
-    private Roles role;
+    private Roles role = Roles.COLABORADOR;
 
-    @OneToMany(mappedBy = "usuario")
+    @JsonIgnore
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.REMOVE)
     private List<EventosEntity> eventos;
 
-    @OneToOne(mappedBy = "usuario")
+    @JsonIgnore
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.REMOVE)
     private IdeiasEntity ideia;
 
 }
