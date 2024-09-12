@@ -4,7 +4,6 @@ import com.inova_evento.app.entities.EventosEntity;
 import com.inova_evento.app.entities.UsuariosEntity;
 import com.inova_evento.app.entities.enums.Roles;
 import com.inova_evento.app.repositories.EventosRepository;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,19 +11,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
-import javax.management.relation.Role;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static com.inova_evento.app.entities.enums.Roles.ADMIN;
 import static com.inova_evento.app.entities.enums.Roles.COLABORADOR;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 public class EventosServiceTest {
@@ -76,7 +70,7 @@ public class EventosServiceTest {
 
     @Test
     @DisplayName("TesteSave usuario admin")
-    public void testSaveWithAdminUser() {
+    public void cenario01() {
         Long userId = 1L;
         UsuariosEntity adminUser = new UsuariosEntity();
         adminUser.setRole(Roles.ADMIN);
@@ -92,10 +86,24 @@ public class EventosServiceTest {
         verify(eventosRepository).save(evento);
         assertEquals(evento, result);
     }
+    @Test
+    @DisplayName("TesteSave usuario colaborador")
+    public void cenario02() {
+        Long userId = 2L;
+        UsuariosEntity colaborador = new UsuariosEntity();
+        colaborador.setRole(COLABORADOR);
+        EventosEntity evento = new EventosEntity();
+
+        when(usuariosService.findById(userId)).thenReturn(colaborador);
+
+        assertThrows(SecurityException.class, () -> eventosService.save(evento, userId));
+        verify(usuariosService).findById(userId);
+        verify(eventosRepository, never()).save(any(EventosEntity.class));
+    }
 
     @Test
     @DisplayName("TestUpdate com sucesso")
-    void testUpdateSuccess() {
+    void cenario03() {
         evento.setNome("Evento Atualizado");
 
         when(eventosRepository.save(evento)).thenReturn(evento);
@@ -107,7 +115,7 @@ public class EventosServiceTest {
 
     @Test
     @DisplayName("TestUpdate com falha")
-    void testUpdateFailure() {
+    void cenario04() {
         EventosEntity eventoInexistente = new EventosEntity();
         eventoInexistente.setNome("Evento Inexistente");
 
@@ -120,7 +128,7 @@ public class EventosServiceTest {
 
     @Test
     @DisplayName("TestFindById sucesso")
-    void testFindByIdSuccess() {
+    void cenario05() {
         EventosEntity foundEvent = eventosService.findById(1L);
         assertEquals(1L, foundEvent.getId());
         assertEquals("Evento Teste", foundEvent.getNome());
@@ -128,7 +136,7 @@ public class EventosServiceTest {
 
     @Test
     @DisplayName("TestFindById com erro")
-    void testFindByIdFailure() {
+    void cenario06() {
         when(eventosRepository.findById(2L)).thenReturn(Optional.empty());
 
         assertThrows(RuntimeException.class, () -> {
@@ -139,7 +147,7 @@ public class EventosServiceTest {
     // Testes para o método findAll
     @Test
     @DisplayName("TestFindAll com sucesso")
-    void testFindAllWithEvents() {
+    void cenario07() {
         List<EventosEntity> eventos = eventosService.findALl();
         assertEquals(2, eventos.size());
         assertEquals("Evento Teste", eventos.get(0).getNome());
@@ -148,7 +156,7 @@ public class EventosServiceTest {
 
     @Test
     @DisplayName("TestFindAll com erro")
-    void testFindAllWithoutEvents() {
+    void cenario08() {
         when(eventosRepository.findAll()).thenReturn(List.of());
 
         List<EventosEntity> eventos = eventosService.findALl();
