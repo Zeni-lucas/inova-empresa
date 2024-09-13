@@ -53,15 +53,14 @@ public class UsuariosService {
     }
 
     @Transactional
-    public void setRole(Long id, UsuariosEntity user){
-
+    public UsuariosEntity setRole(Long id, UsuariosEntity user){
         var admin = findById(id);
         var usuario = findById(user.getId());
         if (!admin.getRole().equals(Roles.ADMIN)) {
             throw new AccessDeniedException("Acesso não autorizado");
         }
         usuario.setRole(user.getRole());
-
+        return usuario;
     }
 
 

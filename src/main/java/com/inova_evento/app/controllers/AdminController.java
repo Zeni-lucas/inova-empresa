@@ -1,6 +1,7 @@
 package com.inova_evento.app.controllers;
 
 import com.inova_evento.app.entities.EventosEntity;
+import com.inova_evento.app.entities.UsuariosEntity;
 import com.inova_evento.app.services.EventosService;
 import com.inova_evento.app.services.UsuariosService;
 import jakarta.validation.Valid;
@@ -46,7 +47,8 @@ public class AdminController {
     }
 
     @PutMapping("/user/roles/{id}")
-    public ResponseEntity<Void> updateRole(@PathVariable Long id, @RequestBody User user){
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<UsuariosEntity> updateRole(@PathVariable Long id, @RequestBody UsuariosEntity user){
+        var usuario = usuariosService.setRole(id, user);
+        return new ResponseEntity<>(usuario, HttpStatus.OK);
     }
 }
