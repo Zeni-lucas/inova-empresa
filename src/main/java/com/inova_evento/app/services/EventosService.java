@@ -23,8 +23,8 @@ public class EventosService {
 
 
     @Transactional
-    public EventosEntity save(EventosEntity evento, Long userId) {
-        var usuario = usuariosService.findById(userId);
+    public EventosEntity save(EventosEntity evento) {
+        var usuario = usuariosService.findById(evento.getUsuario().getId());
         if (!usuario.getRole().equals(Roles.ADMIN)) {
             throw new AccessDeniedException("Usuário não autorizado");
         }
