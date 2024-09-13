@@ -23,9 +23,9 @@ public class AdminController {
     @Autowired
     private UsuariosService usuariosService;
 
-    @PostMapping("eventos/create/{Id}")
-    public ResponseEntity<EventosEntity> create(@Valid @RequestBody EventosEntity evento, @PathVariable Long userId) {
-            EventosEntity savedEvento = eventosService.save(evento, userId);
+    @PostMapping("eventos/create")
+    public ResponseEntity<EventosEntity> create(@Valid @RequestBody EventosEntity evento) {
+            EventosEntity savedEvento = eventosService.save(evento);
             return new ResponseEntity<>(savedEvento, HttpStatus.CREATED);
     }
 

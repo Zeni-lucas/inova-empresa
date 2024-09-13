@@ -39,7 +39,7 @@ public class UsuariosEntity {
     private List<EventosEntity> eventos;
 
     @JsonIgnore
-    @OneToOne(mappedBy = "usuario", cascade = CascadeType.REMOVE)
+    @ManyToOne(cascade = CascadeType.REMOVE)
     private IdeiasEntity ideia;
 
 
