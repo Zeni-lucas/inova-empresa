@@ -64,7 +64,7 @@ public class UsuariosService {
     }
 
 
-    private void atualizarInformacoes(UsuariosEntity usuarioExistente, UsuariosEntity novoUsuario) {
+    public void atualizarInformacoes(UsuariosEntity usuarioExistente, UsuariosEntity novoUsuario) {
         if (novoUsuario.getSenha() != null && !usuarioExistente.getSenha().equals(novoUsuario.getSenha())) {
             usuarioExistente.setSenha(novoUsuario.getSenha());
         }
