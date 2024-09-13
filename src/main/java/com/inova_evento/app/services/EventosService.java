@@ -3,6 +3,8 @@ package com.inova_evento.app.services;
 import com.inova_evento.app.entities.EventosEntity;
 import com.inova_evento.app.entities.UsuariosEntity;
 import com.inova_evento.app.entities.enums.Roles;
+import com.inova_evento.app.exception.AccessDeniedException;
+import com.inova_evento.app.exception.EntityNotFoundException;
 import com.inova_evento.app.repositories.EventosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,11 +24,11 @@ public class EventosService {
 
     @Transactional
     public EventosEntity save(EventosEntity evento, Long userId) {
-        UsuariosEntity usuario = usuariosService.findById(userId);
-        if (usuario == null || usuario.getRole() == null || !usuario.getRole().equals(Roles.ADMIN)) {
-            throw new SecurityException("Usuário não autorizado");
+        var usuario = usuariosService.findById(userId);
+        if (!usuario.getRole().equals(Roles.ADMIN)) {
+            throw new AccessDeniedException("Usuário não autorizado");
         }
-        return eventosRepository.save(evento);
+            return eventosRepository.save(evento);
     }
 
     @Transactional
@@ -39,8 +41,10 @@ public class EventosService {
 
     @Transactional(readOnly = true)
     public EventosEntity findById(Long id){
-        EventosEntity evento = this.eventosRepository.findById(id).get();
-        return evento;
+
+        return eventosRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Evento não encontrado")
+        );
     }
 
     @Transactional(readOnly = true)

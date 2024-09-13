@@ -37,7 +37,7 @@ public class UsuariosController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<UsuariosEntity> update(@Valid @PathVariable Long id, @RequestBody UsuariosEntity usuario ){
+    public ResponseEntity<UsuariosEntity> update( @PathVariable Long id, @Valid @RequestBody UsuariosEntity usuario ){
         var user = usuariosService.update(usuario, id);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
