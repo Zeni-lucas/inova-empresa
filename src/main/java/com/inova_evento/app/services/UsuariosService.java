@@ -1,9 +1,12 @@
 package com.inova_evento.app.services;
 
 import com.inova_evento.app.entities.UsuariosEntity;
+import com.inova_evento.app.entities.enums.Roles;
+import com.inova_evento.app.exception.AccessDeniedException;
 import com.inova_evento.app.exception.EntityNotFoundException;
 import com.inova_evento.app.exception.UniqueEmailException;
 import com.inova_evento.app.repositories.UsuariosRepository;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -47,6 +50,18 @@ public class UsuariosService {
     @Transactional(readOnly = true)
     public List<UsuariosEntity> findALl(){
         return usuariosRepository.findAll();
+    }
+
+    @Transactional
+    public void setRole(Long id, UsuariosEntity user){
+
+        var admin = findById(id);
+        var usuario = findById(user.getId());
+        if (!admin.getRole().equals(Roles.ADMIN)) {
+            throw new AccessDeniedException("Acesso não autorizado");
+        }
+        usuario.setRole(user.getRole());
+
     }
 
 
