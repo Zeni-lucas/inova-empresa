@@ -7,6 +7,7 @@ import com.inova_evento.app.exception.AccessDeniedException;
 import com.inova_evento.app.exception.BusinnesException;
 import com.inova_evento.app.exception.EntityNotFoundException;
 import com.inova_evento.app.repositories.AvaliacoesRepository;
+import com.inova_evento.app.repositories.JuradosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +22,7 @@ public class AvaliacoesService {
     AvaliacoesRepository avaliacoesRepository;
 
     @Autowired
-    JuradosService juradosService;
+    JuradosRepository juradosService;
 
     @Transactional(readOnly = true)
     public AvaliacoesEntity findById(Long id) {
@@ -32,7 +33,7 @@ public class AvaliacoesService {
     public AvaliacoesEntity avaliar(Long juradoId, Long avaliacaoId, Integer nota){
 
         var avaliacao = findById(avaliacaoId);
-        var jurado = juradosService.findById(juradoId);
+        var jurado = juradosService.findById(juradoId).orElseThrow(()-> new EntityNotFoundException("JUrado não encontrad"));
         if (!avaliacao.getJurado().getId().equals(juradoId)) {
             throw new AccessDeniedException("Jurado não autorizado a avaliar esta ideia");
         }

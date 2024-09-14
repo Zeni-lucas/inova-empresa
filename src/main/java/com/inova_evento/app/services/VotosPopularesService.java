@@ -2,6 +2,10 @@ package com.inova_evento.app.services;
 
 import com.inova_evento.app.entities.VotosPopularesEntity;
 import com.inova_evento.app.exception.BusinnesException;
+import com.inova_evento.app.exception.EntityNotFoundException;
+import com.inova_evento.app.repositories.EventosRepository;
+import com.inova_evento.app.repositories.IdeiasRepository;
+import com.inova_evento.app.repositories.UsuariosRepository;
 import com.inova_evento.app.repositories.VotosPopularesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,18 +21,18 @@ public class VotosPopularesService {
     VotosPopularesRepository votosPopularesRepository;
 
     @Autowired
-    EventosService eventosRepository;
+    EventosRepository eventosRepository;
 
     @Autowired
-    IdeiasService ideiasRepository;
+    IdeiasRepository ideiasRepository;
 
     @Autowired
-    UsuariosService usuariosRepository;
+    UsuariosRepository usuariosRepository;
 
     @Transactional
     public String votar(Long usuarioId, Long ideiaId) {
 
-        var ideia = ideiasRepository.findById(ideiaId);
+        var ideia = ideiasRepository.findById(ideiaId).orElseThrow(()-> new EntityNotFoundException("Ideia não encontrada"));
 
         var evento = ideia.getEvento();
         var hoje = LocalDate.now();
@@ -38,7 +42,7 @@ public class VotosPopularesService {
         }
 
 
-        var usuario = usuariosRepository.findById(usuarioId);
+        var usuario = usuariosRepository.findById(usuarioId).orElseThrow(() -> new EntityNotFoundException("Usuario não encontrado"));
 
 
         boolean jaVotou = votosPopularesRepository.findAll().stream()

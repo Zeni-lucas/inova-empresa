@@ -6,6 +6,7 @@ import com.inova_evento.app.entities.enums.Roles;
 import com.inova_evento.app.exception.AccessDeniedException;
 import com.inova_evento.app.exception.EntityNotFoundException;
 import com.inova_evento.app.repositories.EventosRepository;
+import com.inova_evento.app.repositories.UsuariosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,12 +20,12 @@ public class EventosService {
     private EventosRepository eventosRepository;
 
     @Autowired
-    private UsuariosService usuariosService;
+    private UsuariosRepository usuariosService;
 
 
     @Transactional
     public EventosEntity save(EventosEntity evento) {
-        var usuario = usuariosService.findById(evento.getUsuario().getId());
+        var usuario = usuariosService.findById(evento.getUsuario().getId()).orElseThrow(() -> new EntityNotFoundException("Usuario não encontrad"));
         if (!usuario.getRole().equals(Roles.ADMIN)) {
             throw new AccessDeniedException("Usuário não autorizado");
         }

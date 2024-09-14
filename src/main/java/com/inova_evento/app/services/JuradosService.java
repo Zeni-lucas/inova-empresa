@@ -10,6 +10,7 @@ import com.inova_evento.app.exception.EntityNotFoundException;
 import com.inova_evento.app.repositories.AvaliacoesRepository;
 import com.inova_evento.app.repositories.IdeiasRepository;
 import com.inova_evento.app.repositories.JuradosRepository;
+import com.inova_evento.app.repositories.UsuariosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,21 +25,19 @@ public class JuradosService {
     JuradosRepository juradosRepository;
 
     @Autowired
-    UsuariosService usuariosService;
+    UsuariosRepository usuariosService;
 
     @Autowired
-    IdeiasService ideiasService;
-
-    @Autowired
-    AvaliacoesService avaliacaoService;
+    IdeiasRepository ideiasService;
 
     @Autowired
     AvaliacoesRepository avaliacaoRepository;
 
+
     @Transactional
     public JuradosEntity save(Long id, JuradosEntity jurado) {
 
-        var usuarios = usuariosService.findById(id);
+        var usuarios = usuariosService.findById(id).orElseThrow(()->new EntityNotFoundException("Usuario não encontrado"));
         if (!usuarios.getRole().equals(Roles.ADMIN)){
             throw new AccessDeniedException("Usuario não autorizado");
         }
@@ -63,7 +62,7 @@ public class JuradosService {
     //id do evento
     @Transactional
     public void distribuirIdeias(Long id) {
-        var ideias = ideiasService.findByEventoId(id);
+        var ideias = ideiasService.findByEventoId(id).orElseThrow(()->new EntityNotFoundException("Evento não encontrado"));
         var jurados = findByEventoId(id);
 
         if(jurados.size() < 2){

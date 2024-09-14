@@ -21,13 +21,13 @@ public class IdeiasService {
     private IdeiasRepository ideiasRepository;
 
     @Autowired
-    private UsuariosService usuariosService;
+    private UsuariosRepository usuariosService;
 
     @Transactional
     public IdeiasEntity save(IdeiasEntity entity){
         List<UsuariosEntity> usuarios= new ArrayList<>();
         for(UsuariosEntity u: entity.getUsuarios()){
-            var userAdd = usuariosService.findById(u.getId());
+            var userAdd = usuariosService.findById(u.getId()).orElseThrow(()-> new EntityNotFoundException("Usuario não encontrado"));
             usuarios.add(userAdd);
             if (!userAdd.getRole().equals(Roles.COLABORADOR)){
                 throw new BusinnesException("O usuario vinculado a ideia deve ser um colaborador");
