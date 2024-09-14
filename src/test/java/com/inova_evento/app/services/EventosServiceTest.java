@@ -3,7 +3,9 @@ package com.inova_evento.app.services;
 import com.inova_evento.app.entities.EventosEntity;
 import com.inova_evento.app.entities.UsuariosEntity;
 import com.inova_evento.app.entities.enums.Roles;
+import com.inova_evento.app.exception.AccessDeniedException;
 import com.inova_evento.app.repositories.EventosRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,8 +40,8 @@ public class EventosServiceTest {
 
     @BeforeEach
     void setup() {
-        admin = new UsuariosEntity(1L, "ADMIN", "mamonha@gmail.com", "admin123", Roles.ADMIN,null,null);
-        colaborador = new UsuariosEntity(2L, "COLABORADOR", "vitao@gmail.com", "senha123", Roles.COLABORADOR,null,null);
+        admin = new UsuariosEntity(1L, "ADMIN", "mamonha@gmail.com", "admin123", Roles.ADMIN,null,null,null);
+        colaborador = new UsuariosEntity(2L, "COLABORADOR", "vitao@gmail.com", "senha123", Roles.COLABORADOR,null,null,null);
 
         evento = new EventosEntity(
                 1L,
@@ -51,6 +53,7 @@ public class EventosServiceTest {
                 LocalDate.now().plusDays(3),
                 admin,
                 null
+                ,null
         );
 
         Mockito.when(usuariosService.findById(1L)).thenReturn(admin);
@@ -63,7 +66,7 @@ public class EventosServiceTest {
                         2L, "Outro Evento", "Descrição de Outro Evento",
                         LocalDate.now(), LocalDate.now().plusDays(1),
                         LocalDate.now().plusDays(2), LocalDate.now().plusDays(3),
-                        colaborador, null
+                        colaborador, null,null
                 )
         ));
     }
@@ -71,27 +74,22 @@ public class EventosServiceTest {
     @Test
     @DisplayName("Teste save evento com usuário admin")
     void cenario01() {
-        Long userId = 1L;
-
-        Mockito.when(usuariosService.findById(userId)).thenReturn(admin);
-
-        EventosEntity result = eventosService.save(evento, userId);
+        EventosEntity result = eventosService.save(evento);
 
         assertEquals(evento, result);
-        verify(usuariosService).findById(userId);
         verify(eventosRepository).save(evento);
     }
 
     @Test
-    @DisplayName("Teste save evento com usuário colaborador")
+    @DisplayName("Teste save evento com usuário colaborador (não autorizado)")
     void cenario02() {
         Long userId = 2L;
 
         Mockito.when(usuariosService.findById(userId)).thenReturn(colaborador);
-
-        assertThrows(SecurityException.class, () -> eventosService.save(evento, userId));
-        verify(usuariosService).findById(userId);
-        verify(eventosRepository, never()).save(any(EventosEntity.class));
+        Assertions.assertThrows(AccessDeniedException.class, () -> {
+            evento.setUsuario(colaborador);
+            eventosService.save(evento);
+        });
     }
 
     @Test
