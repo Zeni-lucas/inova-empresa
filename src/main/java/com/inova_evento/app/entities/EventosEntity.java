@@ -26,8 +26,6 @@ public class EventosEntity {
     @NotBlank
     private String nome;
     @NotBlank
-    @Column(length = 1000)
-    @Size(min = 1, max = 1000)
     private String descricao;
     @NotNull
     private LocalDate dataInicio;
@@ -43,4 +41,7 @@ public class EventosEntity {
 
     @OneToMany(mappedBy = "evento")
     private List<IdeiasEntity> ideias;
+
+    @ManyToMany(mappedBy = "eventos")
+    private List<JuradosEntity> jurados;
 }
