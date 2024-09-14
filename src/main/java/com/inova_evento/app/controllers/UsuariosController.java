@@ -2,6 +2,7 @@ package com.inova_evento.app.controllers;
 
 import com.inova_evento.app.entities.UsuariosEntity;
 import com.inova_evento.app.services.UsuariosService;
+import com.inova_evento.app.services.VotosPopularesService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,9 @@ public class UsuariosController {
 
     @Autowired
     UsuariosService usuariosService;
+
+    @Autowired
+    private VotosPopularesService votosPopularesService;
 
     @PostMapping("/save")
     public ResponseEntity<UsuariosEntity> save(@Valid @RequestBody UsuariosEntity user){
@@ -47,4 +51,12 @@ public class UsuariosController {
         usuariosService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @PostMapping("/votar")
+    public ResponseEntity<String> votar(@RequestParam Long usuarioId, @RequestParam Long ideiaId) {
+
+        String resultado = votosPopularesService.votar(usuarioId, ideiaId);
+        return new ResponseEntity<>(resultado, HttpStatus.OK);
+    }
+
 }

@@ -28,4 +28,7 @@ public class JuradosEntity {
             inverseJoinColumns = @JoinColumn(name = "evento_id")
     )
     private List<EventosEntity> eventos;
+
+    @OneToMany(mappedBy = "jurado")
+    List<AvaliacoesEntity> avaliacoes;
 }

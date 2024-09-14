@@ -45,4 +45,7 @@ public class UsuariosEntity {
     @OneToMany(mappedBy = "usuario")
     List<JuradosEntity> jurados;
 
+    @OneToMany(mappedBy = "usuario")
+    List<VotosPopularesEntity> votos;
+
 }

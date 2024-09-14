@@ -40,4 +40,11 @@ public class IdeiasEntity {
     @NotNull
     @ManyToOne
     private EventosEntity evento;
+
+    @OneToMany(mappedBy = "ideia")
+    private List<AvaliacoesEntity> avaliacoes;
+
+    @OneToMany(mappedBy = "ideia")
+    private List<VotosPopularesEntity> votos;
+
 }
