@@ -28,7 +28,7 @@ public class EventosService {
         if (!usuario.getRole().equals(Roles.ADMIN)) {
             throw new AccessDeniedException("Usuário não autorizado");
         }
-            return eventosRepository.save(evento);
+        return eventosRepository.save(evento);
     }
 
     @Transactional

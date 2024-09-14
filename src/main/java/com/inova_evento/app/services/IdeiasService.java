@@ -56,4 +56,9 @@ public class IdeiasService {
         List<IdeiasEntity> list = this.ideiasRepository.findAll();
         return list;
     }
+
+    @Transactional(readOnly = true)
+    public List<IdeiasEntity> findByEventoId(Long id){
+        return ideiasRepository.findByEventoId(id).orElseThrow(() -> new EntityNotFoundException("evento não encontrado"));
+    }
 }
