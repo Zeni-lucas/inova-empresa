@@ -63,7 +63,7 @@ public class IdeiasServiceTest {
 
     @Test
     @DisplayName("Salvar ideia com sucesso")
-    void salvarIdeiaComSucesso() {
+    void cenario01() {
         ideia.getUsuarios().add(usuarioColaborador);
 
         IdeiasEntity resultado = ideiasService.save(ideia);
@@ -73,7 +73,7 @@ public class IdeiasServiceTest {
 
     @Test
     @DisplayName("Salvar ideia com erro de função de usuário")
-    void salvarIdeiaComErroDeFuncaoDeUsuario() {
+    void cenario02() {
         ideia.getUsuarios().add(usuarioOutro); // Adiciona um usuário que não é colaborador
 
         assertThrows(BusinnesException.class, () -> ideiasService.save(ideia));
@@ -83,7 +83,7 @@ public class IdeiasServiceTest {
 
     @Test
     @DisplayName("Salvar ideia com erro de usuário já vinculado a outra ideia")
-    void salvarIdeiaComErroUsuarioJaVinculado() {
+    void cenario03() {
         usuarioColaborador.setIdeia(new IdeiasEntity()); // Usuário já vinculado a outra ideia
         ideia.getUsuarios().add(usuarioColaborador);
 
@@ -94,7 +94,7 @@ public class IdeiasServiceTest {
 
     @Test
     @DisplayName("Encontrar ideia por ID com sucesso")
-    void encontrarIdeiaPorIdComSucesso() {
+    void cenario04() {
         IdeiasEntity resultado = ideiasService.findById(1L);
 
         assertEquals(1L, resultado.getId());
@@ -103,7 +103,7 @@ public class IdeiasServiceTest {
 
     @Test
     @DisplayName("Erro ao encontrar ideia por ID")
-    void erroEncontrarIdeiaPorId() {
+    void cenario05() {
         Mockito.when(ideiasRepository.findById(2L)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> ideiasService.findById(2L));
@@ -111,7 +111,7 @@ public class IdeiasServiceTest {
 
     @Test
     @DisplayName("Encontrar todas as ideias")
-    void encontrarTodasIdeias() {
+    void cenario06() {
         List<IdeiasEntity> resultado = ideiasService.findAll();
 
         assertEquals(1, resultado.size());
@@ -120,7 +120,7 @@ public class IdeiasServiceTest {
 
     @Test
     @DisplayName("Encontrar ideias por ID de evento com sucesso")
-    void encontrarIdeiasPorEventoId() {
+    void cenario07() {
 
         Mockito.when(ideiasRepository.findByEventoId(1L)).thenReturn(Optional.of(List.of(ideia)));
 
@@ -131,7 +131,7 @@ public class IdeiasServiceTest {
 
     @Test
     @DisplayName("Erro ao encontrar ideias por ID de evento")
-    void erroEncontrarIdeiasPorEventoId() {
+    void cenario08() {
 
         Mockito.when(ideiasRepository.findByEventoId(2L)).thenReturn(Optional.empty());
 
