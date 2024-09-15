@@ -36,8 +36,8 @@ public class UsuariosControllerTeste {
 
     @BeforeEach
     void setup(){
-        mamonha = new UsuariosEntity(1L,"Mamonha Cardoso", "mamonha@gmail.com", "mamonha123", null,null,null,null);
-        vitor = new UsuariosEntity(2L, "Vitor Tdah", "tdah@gmail.com", "tdah123", null,null,null,null);
+        mamonha = new UsuariosEntity(1L,"Mamonha Cardoso", "mamonha@gmail.com", "mamonha123", null,null,null,null,null);
+        vitor = new UsuariosEntity(2L, "Vitor Tdah", "tdah@gmail.com", "tdah123", null,null,null,null,null);
 
         Mockito.when(usuariosService.save(any(UsuariosEntity.class))).thenReturn(mamonha);
         Mockito.when(usuariosService.findById(1L)).thenReturn(mamonha);
