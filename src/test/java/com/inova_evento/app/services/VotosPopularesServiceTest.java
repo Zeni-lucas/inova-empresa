@@ -76,7 +76,7 @@ public class VotosPopularesServiceTest {
 
     @Test
     @DisplayName("Teste votar com sucesso")
-    void votarComSucesso() {
+    void cenario01() {
         String resultado = votosPopularesService.votar(1L, 1L);
 
         assertEquals("Voto registrado com sucesso.", resultado);
@@ -85,7 +85,7 @@ public class VotosPopularesServiceTest {
 
     @Test
     @DisplayName("Teste votar fora do período de votação")
-    void votarForaDoPeriodo() {
+    void cenario02() {
         evento.setDataAvaliacaoPopular(LocalDate.now().minusDays(1));
 
         assertThrows(BusinnesException.class, () -> votosPopularesService.votar(1L, 1L));
@@ -94,7 +94,7 @@ public class VotosPopularesServiceTest {
 
     @Test
     @DisplayName("Teste votar em uma ideia já votada pelo usuário")
-    void votarDuplicado() {
+    void cenario03() {
         Mockito.when(votosPopularesRepository.findAll()).thenReturn(List.of(votoPopular));
 
         assertThrows(BusinnesException.class, () -> votosPopularesService.votar(1L, 1L));
@@ -102,7 +102,7 @@ public class VotosPopularesServiceTest {
 
     @Test
     @DisplayName("Teste votar com ideia não encontrada")
-    void votarIdeiaNaoEncontrada() {
+    void cenario04() {
         Mockito.when(ideiasRepository.findById(2L)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> votosPopularesService.votar(1L, 2L));
@@ -110,7 +110,7 @@ public class VotosPopularesServiceTest {
 
     @Test
     @DisplayName("Teste votar com usuário não encontrado")
-    void votarUsuarioNaoEncontrado() {
+    void cenario05() {
         Mockito.when(usuariosRepository.findById(2L)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> votosPopularesService.votar(2L, 1L));
