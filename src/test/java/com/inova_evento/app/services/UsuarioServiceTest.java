@@ -26,15 +26,15 @@ public class UsuarioServiceTest {
     @Autowired
     UsuariosService usuariosService;
 
-    UsuariosEntity usuario = new UsuariosEntity(null ,"mamonha cardoso", "mamonha302br@gmail.com", "mamonha123", Roles.ADMIN, null, null,null);
-    UsuariosEntity usuarioAtualizado = new UsuariosEntity(null, "mamonha alterado", "mamonha302br@gmail.com", "mamonha123", Roles.ADMIN, null, null,null);
+    UsuariosEntity usuario = new UsuariosEntity(null ,"mamonha cardoso", "mamonha302br@gmail.com", "mamonha123", Roles.ADMIN, null, null,null,null);
+    UsuariosEntity usuarioAtualizado = new UsuariosEntity(null, "mamonha alterado", "mamonha302br@gmail.com", "mamonha123", Roles.ADMIN, null, null,null,null);
 
 
     @BeforeEach
     void setup(){
-        UsuariosEntity usuarioReturn = new UsuariosEntity(10L,"mamonha cardoso", "mamonha302br@gmail.com", "mamonha123", Roles.ADMIN, null, null,null);
+        UsuariosEntity usuarioReturn = new UsuariosEntity(10L,"mamonha cardoso", "mamonha302br@gmail.com", "mamonha123", Roles.ADMIN, null, null,null,null);
         Mockito.when(usuariosRepository.save(usuario)).thenReturn(usuarioReturn);
-        var usuarioReturnAtualizado = new UsuariosEntity(10L, "mamonha alterado", "mamonha302br@gmail.com", "mamonha123", Roles.ADMIN, null, null,null);
+        var usuarioReturnAtualizado = new UsuariosEntity(10L, "mamonha alterado", "mamonha302br@gmail.com", "mamonha123", Roles.ADMIN, null, null,null,null);
         Mockito.when(usuariosRepository.save(usuarioAtualizado)).thenReturn(usuarioReturnAtualizado);
         Mockito.when(usuariosRepository.findById(10L)).thenReturn(Optional.of(usuarioReturn));
         Mockito.when(usuariosRepository.findById(usuarioAtualizado.getId())).thenReturn(Optional.of(usuarioAtualizado));
@@ -86,8 +86,8 @@ public class UsuarioServiceTest {
     @DisplayName("Teste findAll")
     void cenario08() {
         List<UsuariosEntity> usuarios = Arrays.asList(
-                new UsuariosEntity(1L, "Nome1", "email1@example.com", "senha1", Roles.COLABORADOR, null, null,null),
-                new UsuariosEntity(2L, "Nome2", "email2@example.com", "senha2", Roles.ADMIN, null, null,null)
+                new UsuariosEntity(1L, "Nome1", "email1@example.com", "senha1", Roles.COLABORADOR, null, null,null,null),
+                new UsuariosEntity(2L, "Nome2", "email2@example.com", "senha2", Roles.ADMIN, null, null,null,null)
         );
 
         Mockito.when(usuariosRepository.findAll()).thenReturn(usuarios);
@@ -105,9 +105,9 @@ public class UsuarioServiceTest {
         Long adminId = 1L;
         Long userId = 2L;
 
-        var admin = new UsuariosEntity(adminId, "Admin", "admin@example.com", "senha", Roles.ADMIN, null, null,null);
-        var usuario = new UsuariosEntity(userId, "Usuario", "user@example.com", "senha", Roles.COLABORADOR, null, null,null);
-        var usuarioAtualizado = new UsuariosEntity(userId, "Usuario", "user@example.com", "senha", Roles.ADMIN, null, null,null);
+        var admin = new UsuariosEntity(adminId, "Admin", "admin@example.com", "senha", Roles.ADMIN, null, null,null,null);
+        var usuario = new UsuariosEntity(userId, "Usuario", "user@example.com", "senha", Roles.COLABORADOR, null, null,null,null);
+        var usuarioAtualizado = new UsuariosEntity(userId, "Usuario", "user@example.com", "senha", Roles.ADMIN, null, null,null,null);
 
         Mockito.when(usuariosRepository.findById(adminId)).thenReturn(Optional.of(admin));
         Mockito.when(usuariosRepository.findById(userId)).thenReturn(Optional.of(usuario));
@@ -122,8 +122,8 @@ public class UsuarioServiceTest {
     @Test
     @DisplayName("Teste atualizarInformacoes com e-mail já existente")
     void cenario12() {
-        UsuariosEntity usuarioExistente = new UsuariosEntity(10L, "Nome", "email@antigo.com", "senha", Roles.COLABORADOR, null, null,null);
-        UsuariosEntity novoUsuario = new UsuariosEntity(null, "Nome Novo", "email@novo.com", "novaSenha", Roles.COLABORADOR, null, null,null);
+        UsuariosEntity usuarioExistente = new UsuariosEntity(10L, "Nome", "email@antigo.com", "senha", Roles.COLABORADOR, null, null,null,null);
+        UsuariosEntity novoUsuario = new UsuariosEntity(null, "Nome Novo", "email@novo.com", "novaSenha", Roles.COLABORADOR, null, null,null,null);
 
         Mockito.when(usuariosRepository.existsByEmail(novoUsuario.getEmail())).thenReturn(true);
 

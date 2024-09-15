@@ -40,8 +40,8 @@ public class EventosServiceTest {
 
     @BeforeEach
     void setup() {
-        admin = new UsuariosEntity(1L, "ADMIN", "mamonha@gmail.com", "admin123", Roles.ADMIN,null,null,null);
-        colaborador = new UsuariosEntity(2L, "COLABORADOR", "vitao@gmail.com", "senha123", Roles.COLABORADOR,null,null,null);
+        admin = new UsuariosEntity(1L, "ADMIN", "mamonha@gmail.com", "admin123", Roles.ADMIN,null,null,null,null);
+        colaborador = new UsuariosEntity(2L, "COLABORADOR", "vitao@gmail.com", "senha123", Roles.COLABORADOR,null,null,null,null);
 
         evento = new EventosEntity(
                 1L,
