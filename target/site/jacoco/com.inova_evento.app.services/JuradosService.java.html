@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JuradosService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.inova_evento.app.services</a> &gt; <span class="el_source">JuradosService.java</span></div><h1>JuradosService.java</h1><pre class="source lang-java linenums">package com.inova_evento.app.services;
+
+import com.inova_evento.app.entities.AvaliacoesEntity;
+import com.inova_evento.app.entities.IdeiasEntity;
+import com.inova_evento.app.entities.JuradosEntity;
+import com.inova_evento.app.entities.enums.Roles;
+import com.inova_evento.app.exception.AccessDeniedException;
+import com.inova_evento.app.exception.BusinnesException;
+import com.inova_evento.app.exception.EntityNotFoundException;
+import com.inova_evento.app.repositories.AvaliacoesRepository;
+import com.inova_evento.app.repositories.IdeiasRepository;
+import com.inova_evento.app.repositories.JuradosRepository;
+import com.inova_evento.app.repositories.UsuariosRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collections;
+import java.util.List;
+
+@Service
+<span class="fc" id="L22">public class JuradosService {</span>
+
+    @Autowired
+    JuradosRepository juradosRepository;
+
+    @Autowired
+    UsuariosRepository usuariosService;
+
+    @Autowired
+    IdeiasRepository ideiasService;
+
+    @Autowired
+    AvaliacoesRepository avaliacaoRepository;
+
+
+    @Transactional
+    public JuradosEntity save(Long id, JuradosEntity jurado) {
+
+<span class="pc" id="L40">        var usuarios = usuariosService.findById(id).orElseThrow(()-&gt;new EntityNotFoundException(&quot;Usuario não encontrado&quot;));</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        if (!usuarios.getRole().equals(Roles.ADMIN)){</span>
+<span class="fc" id="L42">            throw new AccessDeniedException(&quot;Usuario não autorizado&quot;);</span>
+        }
+<span class="fc" id="L44">        return juradosRepository.save(jurado);</span>
+    }
+
+    @Transactional(readOnly = true)
+    public JuradosEntity findById(Long id){
+<span class="fc" id="L49">        return juradosRepository.findById(id).orElseThrow(() -&gt; new EntityNotFoundException(&quot;Não Encontrado&quot;));</span>
+    }
+
+    @Transactional(readOnly = true)
+    public List&lt;JuradosEntity&gt; findAll() {
+<span class="nc" id="L54">        return juradosRepository.findAll();</span>
+    }
+
+    @Transactional(readOnly = true)
+    public List&lt;JuradosEntity&gt; findByEventoId(Long id){
+<span class="pc" id="L59">        return juradosRepository.findByEventoId(id).orElseThrow(() -&gt; new EntityNotFoundException(&quot;Evento não encontrado&quot;));</span>
+    }
+
+    //id do evento
+    @Transactional
+    public void distribuirIdeias(Long id) {
+<span class="pc" id="L65">        var ideias = ideiasService.findByEventoId(id).orElseThrow(()-&gt;new EntityNotFoundException(&quot;Evento não encontrado&quot;));</span>
+<span class="fc" id="L66">        var jurados = findByEventoId(id);</span>
+
+<span class="fc bfc" id="L68" title="All 2 branches covered.">        if(jurados.size() &lt; 2){</span>
+<span class="fc" id="L69">            throw new BusinnesException(&quot;Deve haver no minimo dois jurados para avaliar&quot;);</span>
+        }
+
+        //eu n fiz essa parte, cerebro pequenininho obrigado DEUS POR INVENTAR O CHATGPT
+<span class="fc" id="L73">        Collections.shuffle(ideias);</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">        for (int i = 0; i &lt; ideias.size(); i++) {</span>
+<span class="fc" id="L75">            IdeiasEntity ideia = ideias.get(i);</span>
+
+<span class="fc" id="L77">            JuradosEntity jurado1 = jurados.get(i % jurados.size());</span>
+<span class="fc" id="L78">            JuradosEntity jurado2 = jurados.get((i + 1) % jurados.size());</span>
+
+<span class="fc" id="L80">            avaliacaoRepository.save(new AvaliacoesEntity(null, ideia, jurado1, null));</span>
+<span class="fc" id="L81">            avaliacaoRepository.save(new AvaliacoesEntity(null, ideia, jurado2, null));</span>
+        }
+<span class="fc" id="L83">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

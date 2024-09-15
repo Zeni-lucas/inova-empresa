@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AdminController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.inova_evento.app.controllers</a> &gt; <span class="el_source">AdminController.java</span></div><h1>AdminController.java</h1><pre class="source lang-java linenums">package com.inova_evento.app.controllers;
+
+import com.inova_evento.app.entities.EventosEntity;
+import com.inova_evento.app.entities.IdeiasEntity;
+import com.inova_evento.app.entities.UsuariosEntity;
+import com.inova_evento.app.services.AvaliacoesService;
+import com.inova_evento.app.services.EventosService;
+import com.inova_evento.app.services.JuradosService;
+import com.inova_evento.app.services.UsuariosService;
+import jakarta.validation.Valid;
+import org.apache.catalina.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping(&quot;/api/admin&quot;)
+<span class="fc" id="L21">public class AdminController {</span>
+
+    @Autowired
+    private EventosService eventosService;
+
+    @Autowired
+    private UsuariosService usuariosService;
+
+    @Autowired
+    private JuradosService juradosService;
+
+    @Autowired
+    private AvaliacoesService avaliacoesService;
+
+    @PostMapping(&quot;eventos/create&quot;)
+    public ResponseEntity&lt;EventosEntity&gt; create(@Valid @RequestBody EventosEntity evento) {
+<span class="fc" id="L37">        EventosEntity savedEvento = eventosService.save(evento);</span>
+<span class="fc" id="L38">        return new ResponseEntity&lt;&gt;(savedEvento, HttpStatus.CREATED);</span>
+    }
+
+    @PutMapping(&quot;eventos/update/{id}&quot;)
+    public ResponseEntity&lt;EventosEntity&gt; update(@Valid @RequestBody EventosEntity evento,  @PathVariable Long id) {
+<span class="fc" id="L43">        EventosEntity updatedEvento = eventosService.update(evento, id);</span>
+<span class="fc" id="L44">        return new ResponseEntity&lt;&gt;(updatedEvento, HttpStatus.OK);</span>
+    }
+
+    @GetMapping(&quot;eventos/findbyid/{id}&quot;)
+    public ResponseEntity&lt;EventosEntity&gt; findById(@PathVariable Long id) {
+<span class="fc" id="L49">        EventosEntity evento = eventosService.findById(id);</span>
+<span class="fc" id="L50">        return new ResponseEntity&lt;&gt;(evento, HttpStatus.OK);</span>
+    }
+    @GetMapping(&quot;eventos/findall&quot;)
+    public ResponseEntity&lt;List&lt;EventosEntity&gt;&gt; findAll() {
+<span class="fc" id="L54">        List&lt;EventosEntity&gt; eventos = eventosService.findALl();</span>
+<span class="fc" id="L55">        return new ResponseEntity&lt;&gt;(eventos, HttpStatus.OK);</span>
+    }
+
+    @PutMapping(&quot;/user/roles/{id}&quot;)
+    public ResponseEntity&lt;UsuariosEntity&gt; updateRole(@PathVariable Long id, @RequestBody UsuariosEntity user){
+<span class="fc" id="L60">        var usuario = usuariosService.setRole(id, user);</span>
+<span class="fc" id="L61">        return new ResponseEntity&lt;&gt;(usuario, HttpStatus.OK);</span>
+    }
+
+    @PostMapping(&quot;distribuirideias/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; distribuirIdeias(@PathVariable Long id){
+<span class="fc" id="L66">        juradosService.distribuirIdeias(id);</span>
+<span class="fc" id="L67">        return new ResponseEntity&lt;&gt;(HttpStatus.NO_CONTENT);</span>
+    }
+
+    @GetMapping(&quot;/findtop10&quot;)
+    public ResponseEntity&lt;List&lt;IdeiasEntity&gt;&gt; findTop10(){
+<span class="fc" id="L72">        var avaliacoes = avaliacoesService.findTop10Ideias();</span>
+<span class="fc" id="L73">        return new ResponseEntity&lt;&gt;(avaliacoes, HttpStatus.OK);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

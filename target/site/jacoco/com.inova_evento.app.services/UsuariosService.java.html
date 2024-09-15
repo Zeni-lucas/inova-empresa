@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UsuariosService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.inova_evento.app.services</a> &gt; <span class="el_source">UsuariosService.java</span></div><h1>UsuariosService.java</h1><pre class="source lang-java linenums">package com.inova_evento.app.services;
+
+import com.inova_evento.app.entities.UsuariosEntity;
+import com.inova_evento.app.entities.enums.Roles;
+import com.inova_evento.app.exception.AccessDeniedException;
+import com.inova_evento.app.exception.EntityNotFoundException;
+import com.inova_evento.app.exception.UniqueEmailException;
+import com.inova_evento.app.repositories.UsuariosRepository;
+import org.apache.catalina.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+<span class="fc" id="L18">public class UsuariosService {</span>
+    @Autowired
+    private UsuariosRepository usuariosRepository;
+
+    @Transactional
+    public UsuariosEntity save(UsuariosEntity usuarios){
+        try {
+<span class="fc" id="L25">            return this.usuariosRepository.save(usuarios);</span>
+<span class="nc" id="L26">        } catch (org.springframework.dao.DataIntegrityViolationException e){</span>
+<span class="nc" id="L27">            throw new UniqueEmailException(&quot;Erro ao criar o usuario&quot;);</span>
+        }
+
+    }
+
+    @Transactional
+    public UsuariosEntity update(UsuariosEntity usuario, Long id){
+
+<span class="fc" id="L35">        var user = findById(id);</span>
+<span class="fc" id="L36">        atualizarInformacoes(user, usuario);</span>
+<span class="fc" id="L37">        return user;</span>
+    }
+
+    @Transactional
+    public void delete(Long id){
+<span class="fc" id="L42">        this.usuariosRepository.deleteById(id);</span>
+<span class="fc" id="L43">    }</span>
+
+    @Transactional(readOnly = true)
+    public UsuariosEntity findById(Long id){
+<span class="pc" id="L47">        return usuariosRepository.findById(id).orElseThrow( () -&gt; new EntityNotFoundException(String.format(&quot;Usuário id=%s não encontrado&quot;, id)));</span>
+    }
+
+    @Transactional(readOnly = true)
+    public List&lt;UsuariosEntity&gt; findALl(){
+<span class="fc" id="L52">        return usuariosRepository.findAll();</span>
+    }
+
+    @Transactional
+    public UsuariosEntity setRole(Long id, UsuariosEntity user){
+<span class="fc" id="L57">        var admin = findById(id);</span>
+<span class="fc" id="L58">        var usuario = findById(user.getId());</span>
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">        if (!admin.getRole().equals(Roles.ADMIN)) {</span>
+<span class="nc" id="L60">            throw new AccessDeniedException(&quot;Acesso não autorizado&quot;);</span>
+        }
+<span class="fc" id="L62">        usuario.setRole(user.getRole());</span>
+<span class="fc" id="L63">        return usuario;</span>
+    }
+
+
+    public void atualizarInformacoes(UsuariosEntity usuarioExistente, UsuariosEntity novoUsuario) {
+<span class="pc bpc" id="L68" title="1 of 4 branches missed.">        if (novoUsuario.getSenha() != null &amp;&amp; !usuarioExistente.getSenha().equals(novoUsuario.getSenha())) {</span>
+<span class="fc" id="L69">            usuarioExistente.setSenha(novoUsuario.getSenha());</span>
+        }
+<span class="pc bpc" id="L71" title="1 of 4 branches missed.">        if (novoUsuario.getEmail() != null &amp;&amp; !usuarioExistente.getEmail().equals(novoUsuario.getEmail())) {</span>
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">            if (usuariosRepository.existsByEmail(novoUsuario.getEmail())) {</span>
+<span class="fc" id="L73">                throw new UniqueEmailException(String.format(&quot;O email %s já está em uso.&quot;, novoUsuario.getEmail()));</span>
+            }
+        }
+<span class="pc bpc" id="L76" title="2 of 4 branches missed.">        if (novoUsuario.getNome() != null &amp;&amp; !usuarioExistente.getNome().equals(novoUsuario.getNome())) {</span>
+<span class="fc" id="L77">            usuarioExistente.setNome(novoUsuario.getNome());</span>
+        }
+<span class="fc" id="L79">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

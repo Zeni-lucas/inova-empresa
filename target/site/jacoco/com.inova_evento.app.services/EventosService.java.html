@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EventosService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.inova_evento.app.services</a> &gt; <span class="el_source">EventosService.java</span></div><h1>EventosService.java</h1><pre class="source lang-java linenums">package com.inova_evento.app.services;
+
+import com.inova_evento.app.entities.EventosEntity;
+import com.inova_evento.app.entities.UsuariosEntity;
+import com.inova_evento.app.entities.enums.Roles;
+import com.inova_evento.app.exception.AccessDeniedException;
+import com.inova_evento.app.exception.EntityNotFoundException;
+import com.inova_evento.app.repositories.EventosRepository;
+import com.inova_evento.app.repositories.UsuariosRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+<span class="fc" id="L17">public class EventosService {</span>
+
+    @Autowired
+    private EventosRepository eventosRepository;
+
+    @Autowired
+    private UsuariosRepository usuariosService;
+
+
+    @Transactional
+    public EventosEntity save(EventosEntity evento) {
+<span class="pc" id="L28">        var usuario = usuariosService.findById(evento.getUsuario().getId()).orElseThrow(() -&gt; new EntityNotFoundException(&quot;Usuario não encontrad&quot;));</span>
+<span class="nc bnc" id="L29" title="All 2 branches missed.">        if (!usuario.getRole().equals(Roles.ADMIN)) {</span>
+<span class="nc" id="L30">            throw new AccessDeniedException(&quot;Usuário não autorizado&quot;);</span>
+        }
+<span class="nc" id="L32">        return eventosRepository.save(evento);</span>
+    }
+
+    @Transactional
+    public EventosEntity update(EventosEntity evento, Long id) {
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        if (!eventosRepository.findById(id).isPresent()) {</span>
+<span class="fc" id="L38">            throw new RuntimeException(&quot;Evento não encontrado&quot;);</span>
+        }
+<span class="fc" id="L40">        return eventosRepository.save(evento);</span>
+    }
+
+    @Transactional(readOnly = true)
+    public EventosEntity findById(Long id){
+
+<span class="fc" id="L46">        return eventosRepository.findById(id).orElseThrow(</span>
+<span class="fc" id="L47">                () -&gt; new EntityNotFoundException(&quot;Evento não encontrado&quot;)</span>
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public List&lt;EventosEntity&gt; findALl(){
+<span class="fc" id="L53">        List&lt;EventosEntity&gt; list = this.eventosRepository.findAll();</span>
+<span class="fc" id="L54">        return list;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

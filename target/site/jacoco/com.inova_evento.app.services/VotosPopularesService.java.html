@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>VotosPopularesService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.inova_evento.app.services</a> &gt; <span class="el_source">VotosPopularesService.java</span></div><h1>VotosPopularesService.java</h1><pre class="source lang-java linenums">package com.inova_evento.app.services;
+
+import com.inova_evento.app.entities.VotosPopularesEntity;
+import com.inova_evento.app.exception.BusinnesException;
+import com.inova_evento.app.exception.EntityNotFoundException;
+import com.inova_evento.app.repositories.EventosRepository;
+import com.inova_evento.app.repositories.IdeiasRepository;
+import com.inova_evento.app.repositories.UsuariosRepository;
+import com.inova_evento.app.repositories.VotosPopularesRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+
+@Service
+<span class="fc" id="L17">public class VotosPopularesService {</span>
+
+
+    @Autowired
+    VotosPopularesRepository votosPopularesRepository;
+
+    @Autowired
+    EventosRepository eventosRepository;
+
+    @Autowired
+    IdeiasRepository ideiasRepository;
+
+    @Autowired
+    UsuariosRepository usuariosRepository;
+
+    @Transactional
+    public String votar(Long usuarioId, Long ideiaId) {
+
+<span class="fc" id="L35">        var ideia = ideiasRepository.findById(ideiaId).orElseThrow(()-&gt; new EntityNotFoundException(&quot;Ideia não encontrada&quot;));</span>
+
+<span class="fc" id="L37">        var evento = ideia.getEvento();</span>
+<span class="fc" id="L38">        var hoje = LocalDate.now();</span>
+
+<span class="pc bpc" id="L40" title="1 of 4 branches missed.">        if (hoje.isBefore(evento.getDataInicio()) || hoje.isAfter(evento.getDataAvaliacaoPopular())) {</span>
+<span class="fc" id="L41">            throw new BusinnesException(&quot;Votação não permitida fora do período de votação.&quot;);</span>
+        }
+
+
+<span class="fc" id="L45">        var usuario = usuariosRepository.findById(usuarioId).orElseThrow(() -&gt; new EntityNotFoundException(&quot;Usuario não encontrado&quot;));</span>
+
+
+<span class="fc" id="L48">        boolean jaVotou = votosPopularesRepository.findAll().stream()</span>
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">                .anyMatch(voto -&gt; voto.getUsuario().getId().equals(usuarioId) &amp;&amp;</span>
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">                        voto.getIdeia().getId().equals(ideiaId));</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        if (jaVotou) {</span>
+<span class="fc" id="L52">            throw new BusinnesException(&quot;O colaborador já votou nesta ideia.&quot;);</span>
+        }
+
+
+<span class="fc" id="L56">        var voto = new VotosPopularesEntity();</span>
+<span class="fc" id="L57">        voto.setUsuario(usuario);</span>
+<span class="fc" id="L58">        voto.setIdeia(ideia);</span>
+<span class="fc" id="L59">        votosPopularesRepository.save(voto);</span>
+
+<span class="fc" id="L61">        return &quot;Voto registrado com sucesso.&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

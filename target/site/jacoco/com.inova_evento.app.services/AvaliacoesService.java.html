@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AvaliacoesService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.inova_evento.app.services</a> &gt; <span class="el_source">AvaliacoesService.java</span></div><h1>AvaliacoesService.java</h1><pre class="source lang-java linenums">package com.inova_evento.app.services;
+
+import com.inova_evento.app.entities.AvaliacoesEntity;
+import com.inova_evento.app.entities.EventosEntity;
+import com.inova_evento.app.entities.IdeiasEntity;
+import com.inova_evento.app.exception.AccessDeniedException;
+import com.inova_evento.app.exception.BusinnesException;
+import com.inova_evento.app.exception.EntityNotFoundException;
+import com.inova_evento.app.repositories.AvaliacoesRepository;
+import com.inova_evento.app.repositories.JuradosRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
+
+@Service
+<span class="fc" id="L19">public class AvaliacoesService {</span>
+
+    @Autowired
+    AvaliacoesRepository avaliacoesRepository;
+
+    @Autowired
+    JuradosRepository juradosService;
+
+    @Transactional(readOnly = true)
+    public AvaliacoesEntity findById(Long id) {
+<span class="fc" id="L29">        return avaliacoesRepository.findById(id).orElseThrow(() -&gt; new EntityNotFoundException(&quot;Ideia não encontrada&quot;));</span>
+    }
+
+    @Transactional
+    public AvaliacoesEntity avaliar(Long juradoId, Long avaliacaoId, Integer nota){
+
+<span class="fc" id="L35">        var avaliacao = findById(avaliacaoId);</span>
+<span class="pc" id="L36">        var jurado = juradosService.findById(juradoId).orElseThrow(()-&gt; new EntityNotFoundException(&quot;JUrado não encontrad&quot;));</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        if (!avaliacao.getJurado().getId().equals(juradoId)) {</span>
+<span class="fc" id="L38">            throw new AccessDeniedException(&quot;Jurado não autorizado a avaliar esta ideia&quot;);</span>
+        }
+<span class="fc bfc" id="L40" title="All 4 branches covered.">        if (nota &lt; 3 || nota &gt; 10) {</span>
+<span class="fc" id="L41">            throw new BusinnesException(&quot;Nota deve estar entre 3 e 10&quot;);</span>
+        }
+
+<span class="fc" id="L44">        LocalDate hoje = LocalDate.now();</span>
+<span class="fc" id="L45">        EventosEntity evento = avaliacao.getIdeia().getEvento();</span>
+<span class="pc bpc" id="L46" title="1 of 4 branches missed.">        if (hoje.isBefore(evento.getDataInicio()) || hoje.isAfter(evento.getDataAvaliacaoJurados())) {</span>
+<span class="fc" id="L47">            throw new BusinnesException(&quot;Avaliação não permitida fora do período de avaliação.&quot;);</span>
+        }
+
+<span class="fc" id="L50">        avaliacao.setNota(nota);</span>
+<span class="fc" id="L51">        return avaliacoesRepository.save(avaliacao);</span>
+    }
+
+    @Transactional(readOnly = true)
+    public Double calcularMediaNotas(Long ideiaId) {
+<span class="pc" id="L56">        var avaliacoes = avaliacoesRepository.findByIdeiaId(ideiaId).orElseThrow(() -&gt; new EntityNotFoundException(&quot;Avaliação não encontrada&quot;));</span>
+
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        if (avaliacoes.size() != 2) {</span>
+<span class="fc" id="L59">            throw new BusinnesException(&quot;A ideia deve ser avaliada por dois jurados&quot;);</span>
+        }
+
+<span class="fc" id="L62">        return avaliacoes.stream()</span>
+<span class="fc" id="L63">                .mapToDouble(AvaliacoesEntity::getNota)</span>
+<span class="fc" id="L64">                .average()</span>
+<span class="pc" id="L65">                .orElseThrow(() -&gt; new BusinnesException(&quot;Erro ao calcular a média das notas&quot;));</span>
+    }
+
+    @Transactional(readOnly = true)
+    public List&lt;IdeiasEntity&gt; findTop10Ideias() {
+<span class="fc" id="L70">        return avaliacoesRepository.findTop10Ideias();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

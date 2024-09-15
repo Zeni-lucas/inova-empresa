@@ -1,0 +1,12 @@
+com\inova_evento\app\services\EventosServiceTest.class
+com\inova_evento\app\services\VotosPopularesServiceTest.class
+com\inova_evento\app\controller\AdminControllerTest.class
+com\inova_evento\app\services\UsuarioServiceTest.class
+com\inova_evento\app\controller\JuradosControllerTest.class
+com\inova_evento\app\controller\UsuariosControllerTeste.class
+com\inova_evento\app\exception\ApiExceptionHandlerTest.class
+com\inova_evento\app\services\IdeiasServiceTest.class
+com\inova_evento\app\controller\IdeiasControllerTest.class
+com\inova_evento\app\services\JuradosServiceTest.class
+com\inova_evento\app\services\AvaliacoesServiceTest.class
+com\inova_evento\app\AppApplicationTests.class
