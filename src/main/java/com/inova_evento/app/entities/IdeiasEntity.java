@@ -1,5 +1,6 @@
 package com.inova_evento.app.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -36,9 +37,11 @@ public class IdeiasEntity {
 
     @NotNull
     @OneToMany(mappedBy = "ideia")
+    @JsonIgnore
     private List<UsuariosEntity> usuarios;
     @NotNull
     @ManyToOne
+    @JsonIgnore
     private EventosEntity evento;
 
     @OneToMany(mappedBy = "ideia")

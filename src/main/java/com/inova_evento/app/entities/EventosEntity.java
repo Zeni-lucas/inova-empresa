@@ -1,5 +1,6 @@
 package com.inova_evento.app.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -36,10 +37,12 @@ public class EventosEntity {
     @NotNull
     private LocalDate dataAvaliacaoPopular;
 
+    @JsonIgnore
     @ManyToOne
     private UsuariosEntity usuario;
 
     @OneToMany(mappedBy = "evento")
+    @JsonIgnore
     private List<IdeiasEntity> ideias;
 
     @ManyToMany(mappedBy = "eventos")
