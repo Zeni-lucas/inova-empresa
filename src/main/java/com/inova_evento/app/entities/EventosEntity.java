@@ -37,7 +37,7 @@ public class EventosEntity {
     @NotNull
     private LocalDate dataAvaliacaoPopular;
 
-    @JsonIgnore
+    //nao colocar JSONIGNORE AQUI
     @ManyToOne
     private UsuariosEntity usuario;
 

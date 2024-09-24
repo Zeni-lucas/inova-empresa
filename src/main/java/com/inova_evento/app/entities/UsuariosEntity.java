@@ -42,6 +42,7 @@ public class UsuariosEntity {
     @ManyToOne(cascade = CascadeType.REMOVE)
     private IdeiasEntity ideia;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "usuario")
     List<JuradosEntity> jurados;
 
