@@ -28,7 +28,7 @@ public class IdeiasController {
         return new ResponseEntity<>(ideiasService.findById(id), HttpStatus.OK);
     }
 
-    @GetMapping("findAll")
+    @GetMapping("/findall")
     public ResponseEntity<List<IdeiasEntity>> findAll(){
         return new ResponseEntity<>(ideiasService.findAll(), HttpStatus.OK);
     }

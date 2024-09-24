@@ -1,5 +1,6 @@
 package com.inova_evento.app.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -21,6 +22,7 @@ public class AvaliacoesEntity {
 
     @NotNull
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(nullable = false)
     private IdeiasEntity ideia;
 

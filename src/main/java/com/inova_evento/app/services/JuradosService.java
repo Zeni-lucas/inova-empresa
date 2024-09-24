@@ -77,8 +77,8 @@ public class JuradosService {
             JuradosEntity jurado1 = jurados.get(i % jurados.size());
             JuradosEntity jurado2 = jurados.get((i + 1) % jurados.size());
 
-            avaliacaoRepository.save(new AvaliacoesEntity(null, ideia, jurado1, null));
-            avaliacaoRepository.save(new AvaliacoesEntity(null, ideia, jurado2, null));
+            avaliacaoRepository.save(new AvaliacoesEntity(null, ideia, jurado1, 3));
+            avaliacaoRepository.save(new AvaliacoesEntity(null, ideia, jurado2, 3));
         }
     }
 

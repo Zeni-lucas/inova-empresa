@@ -45,6 +45,7 @@ public class IdeiasEntity {
     private EventosEntity evento;
 
     @OneToMany(mappedBy = "ideia")
+    @JsonIgnore
     private List<AvaliacoesEntity> avaliacoes;
 
     @OneToMany(mappedBy = "ideia")
